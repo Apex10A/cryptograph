@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #00ff88;
+  --color-danger: #ff4d4d;
+  --color-warning: #ffaa00;
+  --color-surface: #0f1117;
+  --color-surface-card: #1a1d2e;
+  --color-surface-border: #2a2d3e;
+  --color-surface-hover: #252838;
+
+  --animate-pulse-green: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-slide-down: slideDown 0.3s ease-out;
+  --animate-number-tick: numberTick 0.2s ease-out;
+
+  @keyframes slideDown {
+    from {
+      transform: translateY(-10px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes numberTick {
+    0% {
+      transform: translateY(5px);
+      opacity: 0.5;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply bg-surface text-white font-mono;
+    transition: background 0.3s, color 0.3s;
+  }
+}
+
+@layer utilities {
+  .chart-container {
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-surface;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-surface-border rounded-full;
+  }
+}
