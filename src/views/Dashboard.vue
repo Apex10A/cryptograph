@@ -30,14 +30,13 @@ onMounted(() => {
     <!-- Top Bar -->
     <header class="h-16 flex items-center justify-between px-6 bg-surface-card border-b border-surface-border sticky top-0 z-50">
       <div class="flex items-center gap-3">
-        <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-brand text-black font-black italic">CF</div>
         <h1 class="text-xl font-black tracking-tighter">CRYPTO<span class="text-brand">FLOW</span></h1>
-        <div class="flex items-center gap-2 ml-4 px-2 py-1 rounded-full bg-surface border border-surface-border">
+        <!-- <div class="flex items-center gap-2 ml-4 px-2 py-1 rounded-full bg-surface border border-surface-border">
           <span :class="['w-2 h-2 rounded-full', store.streamStatus === 'live' ? 'bg-brand animate-pulse' : 'bg-gray-500']"></span>
           <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">
             {{ store.streamStatus }}
           </span>
-        </div>
+        </div> -->
       </div>
 
       <div class="flex items-center gap-4">
