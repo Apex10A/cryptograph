@@ -17,7 +17,6 @@ export const useDashboardStore = defineStore('dashboard', () => {
   const selectedCoins = ref<string[]>([...DEFAULT_COIN_IDS])
   const timeRange = ref<TimeRange>('5m')
   const streamStatus = ref<StreamStatus>('paused')
-  const isDarkMode = ref(localStorage.getItem('theme') !== 'light')
   const isLoadingPrices = ref(false)
   const pricesError = ref<string | null>(null)
 
@@ -82,16 +81,6 @@ export const useDashboardStore = defineStore('dashboard', () => {
     timeRange.value = range
   }
 
-  function toggleDarkMode() {
-    isDarkMode.value = !isDarkMode.value
-    localStorage.setItem('theme', isDarkMode.value ? 'dark' : 'light')
-    if (isDarkMode.value) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-  }
-
   function setStreamStatus(status: StreamStatus) {
     streamStatus.value = status
   }
@@ -127,7 +116,6 @@ export const useDashboardStore = defineStore('dashboard', () => {
     selectedCoins,
     timeRange,
     streamStatus,
-    isDarkMode,
     isLoadingPrices,
     pricesError,
     isChartsLoading,
@@ -138,7 +126,6 @@ export const useDashboardStore = defineStore('dashboard', () => {
     loadInitialPrices,
     toggleCoin,
     setTimeRange,
-    toggleDarkMode,
     setStreamStatus,
     startStream,
     stopStream,
