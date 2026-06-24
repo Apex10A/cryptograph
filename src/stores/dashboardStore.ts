@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
-import { ref, shallowRef } from 'vue'
+import { ref, shallowRef, computed } from 'vue'
+import { createInitialCoins, createEmptyChartData, DEFAULT_COIN_IDS } from '../config/coins'
+import { fetchCoinMarketData, mapMarketDataToCoins } from '../api/coingecko'
 import {
   registerDataStream,
   startDataStream,
@@ -8,36 +10,21 @@ import {
 import { filterPointsByTimeRange } from '../utils/timeRange'
 import type { CoinData, PricePoint, TradeEvent, TimeRange, StreamStatus } from '../types'
 
-function createInitialCoins(): CoinData[] {
-  const seeds = [
-    { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin', price: 67000, volume: 35000000000, marketCap: 1300000000000, high24h: 68000, low24h: 66000 },
-    { id: 'ethereum', symbol: 'ETH', name: 'Ethereum', price: 3500, volume: 15000000000, marketCap: 420000000000, high24h: 3600, low24h: 3400 },
-    { id: 'solana', symbol: 'SOL', name: 'Solana', price: 180, volume: 4000000000, marketCap: 80000000000, high24h: 190, low24h: 170 },
-    { id: 'binancecoin', symbol: 'BNB', name: 'BNB', price: 580, volume: 1200000000, marketCap: 88000000000, high24h: 600, low24h: 570 },
-    { id: 'cardano', symbol: 'ADA', name: 'Cardano', price: 0.65, volume: 400000000, marketCap: 23000000000, high24h: 0.68, low24h: 0.63 },
-    { id: 'dogecoin', symbol: 'DOGE', name: 'Dogecoin', price: 0.18, volume: 1800000000, marketCap: 26000000000, high24h: 0.20, low24h: 0.16 },
-  ]
-
-  return seeds.map((seed) => ({
-    ...seed,
-    openPrice24h: seed.price,
-    change24h: 0,
-    changePercent24h: 0,
-  }))
-}
-
 export const useDashboardStore = defineStore('dashboard', () => {
   const coins = ref<CoinData[]>(createInitialCoins())
-
-  const chartData = shallowRef<Record<string, PricePoint[]>>({
-    bitcoin: [], ethereum: [], solana: [], binancecoin: [], cardano: [], dogecoin: [],
-  })
-
+  const chartData = shallowRef<Record<string, PricePoint[]>>(createEmptyChartData())
   const activityFeed = shallowRef<TradeEvent[]>([])
-  const selectedCoins = ref<string[]>(['bitcoin', 'ethereum', 'solana', 'binancecoin', 'cardano', 'dogecoin'])
+  const selectedCoins = ref<string[]>([...DEFAULT_COIN_IDS])
   const timeRange = ref<TimeRange>('5m')
   const streamStatus = ref<StreamStatus>('paused')
   const isDarkMode = ref(localStorage.getItem('theme') !== 'light')
+  const isLoadingPrices = ref(false)
+  const pricesError = ref<string | null>(null)
+
+  const isChartsLoading = computed(() => {
+    if (isLoadingPrices.value) return true
+    return !selectedCoins.value.some((id) => (chartData.value[id]?.length ?? 0) > 0)
+  })
 
   function updateCoinPrice(coinId: string, newPrice: number) {
     const coin = coins.value.find((c) => c.id === coinId)
@@ -66,6 +53,21 @@ export const useDashboardStore = defineStore('dashboard', () => {
 
   function addTradeEvent(event: TradeEvent) {
     activityFeed.value = [event, ...activityFeed.value].slice(0, 50)
+  }
+
+  async function loadInitialPrices() {
+    isLoadingPrices.value = true
+    pricesError.value = null
+
+    try {
+      const markets = await fetchCoinMarketData(coins.value.map((coin) => coin.id))
+      coins.value = mapMarketDataToCoins(markets)
+    } catch (error) {
+      console.error('Failed to load CoinGecko prices:', error)
+      pricesError.value = 'Using fallback prices — live market data unavailable'
+    } finally {
+      isLoadingPrices.value = false
+    }
   }
 
   function toggleCoin(coinId: string) {
@@ -103,7 +105,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
   }
 
   function toggleStream() {
-    if (streamStatus.value === 'live') {
+    if (streamStatus.value === 'live' || streamStatus.value === 'reconnecting') {
       stopStream()
     } else {
       startStream()
@@ -126,10 +128,14 @@ export const useDashboardStore = defineStore('dashboard', () => {
     timeRange,
     streamStatus,
     isDarkMode,
+    isLoadingPrices,
+    pricesError,
+    isChartsLoading,
     updateCoinPrice,
     addPricePoint,
     getFilteredChartData,
     addTradeEvent,
+    loadInitialPrices,
     toggleCoin,
     setTimeRange,
     toggleDarkMode,
