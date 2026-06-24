@@ -1,3 +1,5 @@
+import { COIN_SEEDS, BINANCE_SYMBOL_TO_COIN_ID } from '../config/coins'
+import { startBinanceStream, stopBinanceStream } from '../api/binanceWs'
 import type { CoinData, PricePoint, TradeEvent, StreamStatus } from '../types'
 
 export interface DataStreamHandlers {
@@ -9,82 +11,72 @@ export interface DataStreamHandlers {
 }
 
 let handlers: DataStreamHandlers | null = null
-let intervalId: number | null = null
-let tradeTimeoutId: number | null = null
+let isRunning = false
+
+const MIN_TRADE_VALUE_USD = 25_000
+
+function getTradeSeverity(value: number): TradeEvent['severity'] {
+  if (value >= 250_000) return 'high'
+  if (value >= 75_000) return 'medium'
+  return 'low'
+}
+
+function handleBinanceTrade(trade: {
+  coinId: string
+  symbol: string
+  price: number
+  quantity: number
+  isSell: boolean
+  timestamp: number
+  tradeId: number
+}) {
+  if (!handlers) return
+
+  handlers.updateCoinPrice(trade.coinId, trade.price)
+  handlers.addPricePoint(trade.coinId, {
+    timestamp: trade.timestamp,
+    price: trade.price,
+  })
+
+  const value = trade.price * trade.quantity
+  if (value < MIN_TRADE_VALUE_USD) return
+
+  const coin = handlers.getCoins().find((item) => item.id === trade.coinId)
+  if (!coin) return
+
+  handlers.addTradeEvent({
+    id: `${trade.symbol}-${trade.tradeId}`,
+    timestamp: trade.timestamp,
+    coin: coin.symbol,
+    type: trade.isSell ? 'SELL' : 'BUY',
+    price: trade.price,
+    amount: trade.quantity,
+    value,
+    severity: getTradeSeverity(value),
+  })
+}
 
 export function registerDataStream(streamHandlers: DataStreamHandlers) {
   handlers = streamHandlers
 }
 
 export function startDataStream() {
-  if (!handlers || intervalId !== null) return
+  if (!handlers || isRunning) return
 
-  handlers.setStreamStatus('live')
+  isRunning = true
 
-  intervalId = window.setInterval(() => {
-    if (!handlers) return
-
-    try {
-      handlers.getCoins().forEach((coin) => {
-        const changePercent = (Math.random() - 0.495) * 0.02
-        const newPrice = coin.price + coin.price * changePercent
-
-        handlers!.updateCoinPrice(coin.id, newPrice)
-        handlers!.addPricePoint(coin.id, { timestamp: Date.now(), price: newPrice })
-      })
-    } catch (error) {
-      console.error('Data stream error:', error)
-      handlers.setStreamStatus('error')
-    }
-  }, 1000)
-
-  const scheduleNextTrade = () => {
-    const delay = 2000 + Math.random() * 1000
-    tradeTimeoutId = window.setTimeout(() => {
-      if (!handlers) return
-
-      try {
-        const coins = handlers.getCoins()
-        const randomCoin = coins[Math.floor(Math.random() * coins.length)]
-        if (!randomCoin) return scheduleNextTrade()
-
-        const types: TradeEvent['type'][] = ['BUY', 'SELL', 'ALERT', 'LIQUIDATION']
-        const type = types[Math.floor(Math.random() * types.length)] || 'BUY'
-        const amount = Math.random() * 10
-        const price = randomCoin.price
-        const severities: TradeEvent['severity'][] = ['low', 'medium', 'high']
-        const severity = severities[Math.floor(Math.random() * severities.length)] || 'low'
-
-        handlers.addTradeEvent({
-          id: Math.random().toString(36).substring(7),
-          timestamp: Date.now(),
-          coin: randomCoin.symbol,
-          type,
-          price,
-          amount,
-          value: amount * price,
-          severity,
-        })
-
-        scheduleNextTrade()
-      } catch (error) {
-        console.error('Trade event generator error:', error)
-        scheduleNextTrade()
-      }
-    }, delay)
-  }
-
-  scheduleNextTrade()
+  startBinanceStream(
+    COIN_SEEDS.map((coin) => coin.binanceSymbol),
+    BINANCE_SYMBOL_TO_COIN_ID,
+    handleBinanceTrade,
+    (status) => handlers?.setStreamStatus(status),
+  )
 }
 
 export function stopDataStream() {
-  if (intervalId !== null) {
-    clearInterval(intervalId)
-    intervalId = null
-  }
-  if (tradeTimeoutId !== null) {
-    clearTimeout(tradeTimeoutId)
-    tradeTimeoutId = null
-  }
+  if (!isRunning) return
+
+  isRunning = false
+  stopBinanceStream()
   handlers?.setStreamStatus('paused')
 }

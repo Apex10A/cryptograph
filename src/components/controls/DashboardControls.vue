@@ -1,23 +1,19 @@
 <script setup lang="ts">
+import { COIN_OPTIONS, DEFAULT_COIN_IDS } from '../../config/coins'
 import { useDashboardStore } from '../../stores/dashboardStore'
 import type { TimeRange } from '../../types'
 
 const store = useDashboardStore()
 
 const timeRanges: TimeRange[] = ['1m', '5m', '15m', '1h', '4h', '1d']
-const coinOptions = [
-  { id: 'bitcoin', symbol: 'BTC' },
-  { id: 'ethereum', symbol: 'ETH' },
-  { id: 'solana', symbol: 'SOL' },
-  { id: 'binancecoin', symbol: 'BNB' },
-  { id: 'cardano', symbol: 'ADA' },
-  { id: 'dogecoin', symbol: 'DOGE' }
-]
 
 const resetView = () => {
-  store.selectedCoins = coinOptions.map(c => c.id)
+  store.selectedCoins = [...DEFAULT_COIN_IDS]
   store.setTimeRange('5m')
 }
+
+const isStreamActive = () =>
+  store.streamStatus === 'live' || store.streamStatus === 'reconnecting'
 
 const toggleStream = () => {
   store.toggleStream()
@@ -32,10 +28,10 @@ const toggleStream = () => {
         @click="toggleStream"
         :class="[
           'px-4 py-2 rounded-md font-bold transition-all',
-          store.streamStatus === 'live' ? 'bg-danger text-white hover:bg-red-600' : 'bg-brand text-black hover:bg-opacity-80'
+          isStreamActive() ? 'bg-danger text-white hover:bg-red-600' : 'bg-brand text-black hover:bg-opacity-80'
         ]"
       >
-        {{ store.streamStatus === 'live' ? 'PAUSE STREAM' : 'RESUME STREAM' }}
+        {{ isStreamActive() ? 'PAUSE STREAM' : 'RESUME STREAM' }}
       </button>
       <button
         @click="resetView"
@@ -63,7 +59,7 @@ const toggleStream = () => {
     <!-- Coin Filter -->
     <div class="flex flex-wrap items-center gap-2">
       <button
-        v-for="coin in coinOptions"
+        v-for="coin in COIN_OPTIONS"
         :key="coin.id"
         @click="store.toggleCoin(coin.id)"
         :class="[
