@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, provide, onMounted, ref } from 'vue'
+import { computed, provide, onMounted, onUnmounted, ref } from 'vue'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { BarChart } from 'echarts/charts'
@@ -23,12 +23,19 @@ const store = useDashboardStore()
 provide(THEME_KEY, 'dark')
 
 const displayCoins = ref(store.coins)
+let refreshIntervalId: number | null = null
 
-// Update every 5 seconds as per requirement
 onMounted(() => {
-  setInterval(() => {
+  refreshIntervalId = window.setInterval(() => {
     displayCoins.value = [...store.coins]
   }, 5000)
+})
+
+onUnmounted(() => {
+  if (refreshIntervalId !== null) {
+    clearInterval(refreshIntervalId)
+    refreshIntervalId = null
+  }
 })
 
 const option = computed(() => {
