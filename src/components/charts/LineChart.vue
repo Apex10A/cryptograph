@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, provide, shallowRef, watch } from 'vue'
+import { computed, provide } from 'vue'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { LineChart } from 'echarts/charts'
@@ -10,16 +10,8 @@ import {
   TitleComponent
 } from 'echarts/components'
 import VChart, { THEME_KEY } from 'vue-echarts'
+import ChartSkeleton from './ChartSkeleton.vue'
 import { useDashboardStore } from '../../stores/dashboardStore'
-import { onUnmounted, ref } from 'vue'
-
-const chartRef = ref<any>(null)
-
-onUnmounted(() => {
-  if (chartRef.value) {
-    chartRef.value.dispose()
-  }
-})
 
 use([
   CanvasRenderer,
@@ -37,11 +29,6 @@ const colors = ['#00ff88', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'
 
 const option = computed(() => {
   const selectedCoinData = store.coins.filter(c => store.selectedCoins.includes(c.id))
-  
-  // Find all unique timestamps across selected coins to build a common X axis
-  const allTimestamps = Array.from(new Set(
-    selectedCoinData.flatMap(c => store.getFilteredChartData(c.id).map(p => p.timestamp))
-  )).sort((a, b) => a - b)
 
   const series = selectedCoinData.map((coin, index) => {
     const data = store.getFilteredChartData(coin.id)
@@ -112,7 +99,8 @@ const option = computed(() => {
       PRICE PERFORMANCE
     </h2>
     <div class="chart-container">
-      <VChart :option="option" autoresize />
+      <ChartSkeleton v-if="store.isChartsLoading" />
+      <VChart v-else :option="option" autoresize />
     </div>
   </div>
 </template>

@@ -52,7 +52,14 @@ const sparklinePoints = computed(() => {
     <div class="flex justify-between items-start mb-2">
       <div>
         <h3 class="text-gray-400 text-xs font-bold uppercase tracking-wider">{{ coin.symbol }}</h3>
-        <p class="text-xl font-bold animate-number-tick">${{ formatNumber(coin.price, coin.price < 1 ? 4 : 2) }}</p>
+        <p
+          :class="[
+            'text-xl font-bold animate-number-tick',
+            store.isLoadingPrices ? 'text-gray-600 animate-pulse' : '',
+          ]"
+        >
+          ${{ formatNumber(coin.price, coin.price < 1 ? 4 : 2) }}
+        </p>
       </div>
       <div :class="['text-sm font-bold', isPositive ? 'text-brand' : 'text-danger']">
         {{ isPositive ? '+' : '' }}{{ formatNumber(coin.changePercent24h) }}%

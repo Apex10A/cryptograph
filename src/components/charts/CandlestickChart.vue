@@ -10,6 +10,7 @@ import {
   DataZoomComponent
 } from 'echarts/components'
 import VChart, { THEME_KEY } from 'vue-echarts'
+import ChartSkeleton from './ChartSkeleton.vue'
 import { useDashboardStore } from '../../stores/dashboardStore'
 
 use([
@@ -104,7 +105,8 @@ const option = computed(() => {
       OHLC: {{ store.coins.find(c => c.id === (store.selectedCoins[0] || 'bitcoin'))?.name }}
     </h2>
     <div class="chart-container">
-      <VChart :option="option" autoresize />
+      <ChartSkeleton v-if="store.isChartsLoading" message="Building OHLC candles..." />
+      <VChart v-else :option="option" autoresize />
     </div>
   </div>
 </template>
