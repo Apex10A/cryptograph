@@ -20,7 +20,7 @@ const formatNumber = (num: number, digits: number = 2) => {
 }
 
 const pricePoints = computed(() => {
-  return store.chartData[props.coin.id]?.slice(-20) || []
+  return store.getFilteredChartData(props.coin.id).slice(-20)
 })
 
 const sparklinePoints = computed(() => {
