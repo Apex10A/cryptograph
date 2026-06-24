@@ -54,7 +54,7 @@ const columns = [
     cell: (info) => {
       const severity = info.getValue()
       const colors: Record<string, string> = {
-        low: 'bg-gray-500',
+        low: 'bg-content-muted',
         medium: 'bg-warning',
         high: 'bg-danger animate-pulse',
       }
@@ -130,7 +130,7 @@ const getRowClass = (type: string) => {
 <template>
   <div class="bg-surface-card rounded-xl border border-surface-border overflow-hidden">
     <div class="p-4 border-b border-surface-border flex justify-between items-center bg-surface-card">
-      <h2 class="font-bold flex items-center gap-2">
+      <h2 class="font-semibold flex items-center gap-2 text-content">
         <span class="flex h-2 w-2 relative">
           <span
             v-if="store.streamStatus === 'live'"
@@ -139,7 +139,7 @@ const getRowClass = (type: string) => {
           <span
             :class="[
               'relative inline-flex rounded-full h-2 w-2',
-              store.streamStatus === 'live' ? 'bg-brand' : 'bg-gray-500',
+              store.streamStatus === 'live' ? 'bg-brand' : 'bg-content-muted',
             ]"
           />
         </span>
@@ -160,7 +160,7 @@ const getRowClass = (type: string) => {
             <th
               v-for="header in headerGroup.headers"
               :key="header.id"
-              class="px-4 py-3 text-gray-500 font-bold uppercase tracking-wider border-b border-surface-border"
+              class="px-4 py-3 text-content-muted font-semibold uppercase tracking-wider border-b border-surface-border"
             >
               <FlexRender :render="header.column.columnDef.header" :props="header.getContext()" />
             </th>
@@ -187,13 +187,13 @@ const getRowClass = (type: string) => {
                   <span
                     :class="[
                       'w-2 h-2 rounded-full',
-                      store.streamStatus === 'live' ? 'bg-brand animate-pulse' : 'bg-gray-500',
+                      store.streamStatus === 'live' ? 'bg-brand animate-pulse' : 'bg-content-muted',
                     ]"
                   />
                 </div>
                 <div>
-                  <p class="font-bold text-gray-300">{{ emptyState.title }}</p>
-                  <p class="text-sm text-gray-500 mt-1 max-w-md mx-auto">{{ emptyState.description }}</p>
+                  <p class="font-semibold text-content">{{ emptyState.title }}</p>
+                  <p class="text-sm text-content-muted mt-1 max-w-md mx-auto">{{ emptyState.description }}</p>
                 </div>
               </div>
             </td>

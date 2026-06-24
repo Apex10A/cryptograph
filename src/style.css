@@ -1,15 +1,21 @@
 @import "tailwindcss";
 
-@theme {
-  --color-brand: #00ff88;
-  --color-danger: #ff4d4d;
-  --color-warning: #ffaa00;
-  --color-surface: #0f1117;
-  --color-surface-card: #1a1d2e;
-  --color-surface-border: #2a2d3e;
-  --color-surface-hover: #252838;
+@custom-variant dark (&:where(.dark, .dark *));
 
-  --animate-pulse-green: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+@theme {
+  --color-brand: var(--cf-brand);
+  --color-danger: var(--cf-danger);
+  --color-warning: var(--cf-warning);
+  --color-surface: var(--cf-surface);
+  --color-surface-card: var(--cf-surface-card);
+  --color-surface-border: var(--cf-surface-border);
+  --color-surface-hover: var(--cf-surface-hover);
+  --color-content: var(--cf-content);
+  --color-content-muted: var(--cf-content-muted);
+  --color-up: var(--cf-up);
+  --color-down: var(--cf-down);
+
+  --animate-pulse-brand: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   --animate-slide-down: slideDown 0.3s ease-out;
   --animate-number-tick: numberTick 0.2s ease-out;
 
@@ -36,14 +42,42 @@
   }
 }
 
+:root {
+  --cf-brand: #2563eb;
+  --cf-danger: #dc2626;
+  --cf-warning: #d97706;
+  --cf-surface: #f1f5f9;
+  --cf-surface-card: #ffffff;
+  --cf-surface-border: #e2e8f0;
+  --cf-surface-hover: #f8fafc;
+  --cf-content: #0f172a;
+  --cf-content-muted: #64748b;
+  --cf-up: #16a34a;
+  --cf-down: #dc2626;
+}
+
+.dark {
+  --cf-brand: #26a69a;
+  --cf-danger: #ef5350;
+  --cf-warning: #ffb74d;
+  --cf-surface: #0b0e14;
+  --cf-surface-card: #131722;
+  --cf-surface-border: #1e222d;
+  --cf-surface-hover: #1a1f2b;
+  --cf-content: #d1d4dc;
+  --cf-content-muted: #787b86;
+  --cf-up: #26a69a;
+  --cf-down: #ef5350;
+}
+
 @layer base {
   * {
     box-sizing: border-box;
   }
 
   body {
-    @apply bg-surface text-white font-mono;
-    transition: background 0.3s, color 0.3s;
+    @apply bg-surface text-content font-sans antialiased;
+    transition: background-color 0.3s, color 0.3s;
   }
 }
 

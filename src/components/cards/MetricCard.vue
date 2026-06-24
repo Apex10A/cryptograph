@@ -15,29 +15,29 @@ const isPositive = computed(() => props.coin.change24h >= 0)
 const formatNumber = (num: number, digits: number = 2) => {
   return new Intl.NumberFormat('en-US', {
     minimumFractionDigits: digits,
-    maximumFractionDigits: digits
+    maximumFractionDigits: digits,
   }).format(num)
 }
 
-const pricePoints = computed(() => {
-  return store.getFilteredChartData(props.coin.id).slice(-20)
-})
+const pricePoints = computed(() => store.getFilteredChartData(props.coin.id).slice(-20))
 
 const sparklinePoints = computed(() => {
   if (pricePoints.value.length < 2) return ''
-  const prices = pricePoints.value.map(p => p.price)
+  const prices = pricePoints.value.map((p) => p.price)
   const min = Math.min(...prices)
   const max = Math.max(...prices)
   const range = max - min || 1
-  
+
   const width = 100
   const height = 30
-  
-  return prices.map((p, i) => {
-    const x = (i / (prices.length - 1)) * width
-    const y = height - ((p - min) / range) * height
-    return `${x},${y}`
-  }).join(' ')
+
+  return prices
+    .map((p, i) => {
+      const x = (i / (prices.length - 1)) * width
+      const y = height - ((p - min) / range) * height
+      return `${x},${y}`
+    })
+    .join(' ')
 })
 </script>
 
@@ -45,39 +45,40 @@ const sparklinePoints = computed(() => {
   <div
     @click="store.toggleCoin(coin.id)"
     :class="[
-      'relative overflow-hidden cursor-pointer p-4 rounded-xl transition-all duration-300 border-2',
-      isSelected ? 'border-brand bg-brand bg-opacity-5 shadow-[0_0_15px_rgba(0,255,136,0.2)]' : 'border-surface-border bg-surface-card hover:bg-surface-hover hover:border-gray-600'
+      'relative overflow-hidden cursor-pointer p-4 rounded-xl transition-all duration-300 border',
+      isSelected
+        ? 'border-brand/50 bg-brand/5 ring-1 ring-brand/20 shadow-sm'
+        : 'border-surface-border bg-surface-card hover:bg-surface-hover hover:border-surface-border',
     ]"
   >
     <div class="flex justify-between items-start mb-2">
       <div>
-        <h3 class="text-gray-400 text-xs font-bold uppercase tracking-wider">{{ coin.symbol }}</h3>
+        <h3 class="text-content-muted text-xs font-semibold uppercase tracking-wider">{{ coin.symbol }}</h3>
         <p
           :class="[
-            'text-xl font-bold animate-number-tick',
-            store.isLoadingPrices ? 'text-gray-600 animate-pulse' : '',
+            'text-xl font-mono font-bold animate-number-tick text-content',
+            store.isLoadingPrices ? 'text-content-muted animate-pulse' : '',
           ]"
         >
           ${{ formatNumber(coin.price, coin.price < 1 ? 4 : 2) }}
         </p>
       </div>
-      <div :class="['text-sm font-bold', isPositive ? 'text-brand' : 'text-danger']">
+      <div :class="['text-sm font-mono font-semibold', isPositive ? 'text-up' : 'text-down']">
         {{ isPositive ? '+' : '' }}{{ formatNumber(coin.changePercent24h) }}%
       </div>
     </div>
 
     <div class="flex items-end justify-between gap-4">
-      <div class="text-[10px] text-gray-500">
+      <div class="text-[10px] text-content-muted font-mono">
         <p>VOL: ${{ (coin.volume / 1e9).toFixed(1) }}B</p>
         <p>MCAP: ${{ (coin.marketCap / 1e9).toFixed(1) }}B</p>
       </div>
-      
-      <!-- Sparkline -->
+
       <div class="w-24 h-8">
         <svg v-if="sparklinePoints" viewBox="0 0 100 30" class="w-full h-full">
           <polyline
             fill="none"
-            :stroke="isPositive ? '#00ff88' : '#ff4d4d'"
+            :stroke="isPositive ? 'var(--cf-up)' : 'var(--cf-down)'"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -87,9 +88,8 @@ const sparklinePoints = computed(() => {
       </div>
     </div>
 
-    <!-- Live Dot -->
     <div v-if="isSelected && store.streamStatus === 'live'" class="absolute top-2 right-2">
-      <div class="w-2 h-2 rounded-full bg-brand animate-pulse-green"></div>
+      <div class="w-2 h-2 rounded-full bg-brand animate-pulse-brand" />
     </div>
   </div>
 </template>
