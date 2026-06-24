@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted } from 'vue'
 import { useDashboardStore } from '../stores/dashboardStore'
 import MetricCard from '../components/cards/MetricCard.vue'
 import LineChart from '../components/charts/LineChart.vue'
@@ -12,13 +12,20 @@ import ThemeToggle from '../components/controls/ThemeToggle.vue'
 
 const store = useDashboardStore()
 
-onMounted(async () => {
-  if (store.isDarkMode) {
-    document.documentElement.classList.add('dark')
-  } else {
-    document.documentElement.classList.remove('dark')
+const statusDotClass = computed(() => {
+  switch (store.streamStatus) {
+    case 'live':
+      return 'bg-brand animate-pulse-brand'
+    case 'reconnecting':
+      return 'bg-warning animate-pulse'
+    case 'error':
+      return 'bg-danger'
+    default:
+      return 'bg-content-muted'
   }
+})
 
+onMounted(async () => {
   await store.loadInitialPrices()
   store.startStream()
 })
@@ -32,8 +39,18 @@ onUnmounted(() => {
   <div class="min-h-screen flex flex-col transition-colors duration-300">
     <header class="h-16 flex items-center justify-between px-6 bg-surface-card border-b border-surface-border sticky top-0 z-50">
       <div class="flex items-center gap-3">
-        <h1 class="text-xl font-black tracking-tighter">CRYPTO<span class="text-brand">FLOW</span></h1>
-        <p v-if="store.pricesError" class="text-[10px] text-warning font-bold uppercase tracking-wider">
+        <h1 class="text-xl font-black tracking-tighter text-content">
+          CRYPTO<span class="text-brand">FLOW</span>
+        </h1>
+
+        <div class="flex items-center gap-2 ml-1 px-2.5 py-1 rounded-full bg-surface border border-surface-border">
+          <span :class="['w-2 h-2 rounded-full', statusDotClass]" />
+          <span class="text-[10px] font-semibold uppercase tracking-widest text-content-muted">
+            {{ store.streamStatus }}
+          </span>
+        </div>
+
+        <p v-if="store.pricesError" class="text-[10px] text-warning font-semibold uppercase tracking-wider">
           {{ store.pricesError }}
         </p>
       </div>
@@ -47,11 +64,7 @@ onUnmounted(() => {
 
     <main class="flex-1 p-6 space-y-6">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 overflow-x-auto pb-2 sm:pb-0">
-        <MetricCard
-          v-for="coin in store.coins"
-          :key="coin.id"
-          :coin="coin"
-        />
+        <MetricCard v-for="coin in store.coins" :key="coin.id" :coin="coin" />
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-10 gap-6">
