@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import { useDashboardStore } from '../stores/dashboardStore'
-import { useDataStream } from '../composables/useDataStream'
 import MetricCard from '../components/cards/MetricCard.vue'
 import LineChart from '../components/charts/LineChart.vue'
 import AreaChart from '../components/charts/AreaChart.vue'
@@ -12,16 +11,18 @@ import DashboardControls from '../components/controls/DashboardControls.vue'
 import ThemeToggle from '../components/controls/ThemeToggle.vue'
 
 const store = useDashboardStore()
-const { start } = useDataStream()
 
 onMounted(() => {
-  // Initialize theme
   if (store.isDarkMode) {
     document.documentElement.classList.add('dark')
   } else {
     document.documentElement.classList.remove('dark')
   }
-  start()
+  store.startStream()
+})
+
+onUnmounted(() => {
+  store.stopStream()
 })
 </script>
 
