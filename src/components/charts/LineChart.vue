@@ -40,11 +40,11 @@ const option = computed(() => {
   
   // Find all unique timestamps across selected coins to build a common X axis
   const allTimestamps = Array.from(new Set(
-    selectedCoinData.flatMap(c => (store.chartData[c.id] || []).map(p => p.timestamp))
+    selectedCoinData.flatMap(c => store.getFilteredChartData(c.id).map(p => p.timestamp))
   )).sort((a, b) => a - b)
 
   const series = selectedCoinData.map((coin, index) => {
-    const data = store.chartData[coin.id] || []
+    const data = store.getFilteredChartData(coin.id)
     return {
       name: coin.symbol,
       type: 'line',

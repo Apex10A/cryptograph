@@ -26,7 +26,7 @@ const option = computed(() => {
   const selectedCoinData = store.coins.filter(c => store.selectedCoins.includes(c.id))
   
   const series = selectedCoinData.map((coin) => {
-    const data = store.chartData[coin.id] || []
+    const data = store.getFilteredChartData(coin.id)
     // Simulating Market Cap movement based on price change
     return {
       name: coin.symbol,

@@ -26,7 +26,7 @@ provide(THEME_KEY, 'dark')
 
 const candleData = computed(() => {
   const primaryCoinId = store.selectedCoins[0] || 'bitcoin'
-  const points = store.chartData[primaryCoinId] || []
+  const points = store.getFilteredChartData(primaryCoinId)
   const candles: any[] = []
   
   // Group 10 points into 1 candle
