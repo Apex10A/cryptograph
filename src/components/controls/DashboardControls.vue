@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { useDashboardStore } from '../../stores/dashboardStore'
-import { useDataStream } from '../../composables/useDataStream'
 import type { TimeRange } from '../../types'
 
 const store = useDashboardStore()
-const { start, stop } = useDataStream()
 
 const timeRanges: TimeRange[] = ['1m', '5m', '15m', '1h', '4h', '1d']
 const coinOptions = [
@@ -22,11 +20,7 @@ const resetView = () => {
 }
 
 const toggleStream = () => {
-  if (store.streamStatus === 'live') {
-    stop()
-  } else {
-    start()
-  }
+  store.toggleStream()
 }
 </script>
 
