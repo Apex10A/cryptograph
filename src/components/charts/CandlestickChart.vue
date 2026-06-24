@@ -1,108 +1,105 @@
 <script setup lang="ts">
-import { computed, provide } from 'vue'
-import { use } from 'echarts/core'
-import { CanvasRenderer } from 'echarts/renderers'
+import { computed } from 'vue'
 import { CandlestickChart } from 'echarts/charts'
 import {
   GridComponent,
   TooltipComponent,
   TitleComponent,
-  DataZoomComponent
+  DataZoomComponent,
 } from 'echarts/components'
-import VChart, { THEME_KEY } from 'vue-echarts'
+import VChart from 'vue-echarts'
 import ChartSkeleton from './ChartSkeleton.vue'
+import { useChartSetup } from '../../composables/useChartSetup'
 import { useDashboardStore } from '../../stores/dashboardStore'
 
-use([
-  CanvasRenderer,
+const { theme, createChartTooltip } = useChartSetup(
   CandlestickChart,
   GridComponent,
   TooltipComponent,
   TitleComponent,
-  DataZoomComponent
-])
+  DataZoomComponent,
+)
 
 const store = useDashboardStore()
-provide(THEME_KEY, 'dark')
+
+const primaryCoinId = computed(() => store.selectedCoins[0] || 'bitcoin')
+
+const primaryCoinName = computed(
+  () => store.coins.find((c) => c.id === primaryCoinId.value)?.name ?? 'Bitcoin',
+)
 
 const candleData = computed(() => {
-  const primaryCoinId = store.selectedCoins[0] || 'bitcoin'
-  const points = store.getFilteredChartData(primaryCoinId)
-  const candles: any[] = []
-  
-  // Group 10 points into 1 candle
+  const points = store.getFilteredChartData(primaryCoinId.value)
+  const candles: { time: string; values: [number, number, number, number] }[] = []
+
   for (let i = 0; i < points.length; i += 10) {
     const chunk = points.slice(i, i + 10)
     if (chunk.length === 0) continue
-    
+
     const open = chunk[0]?.price ?? 0
     const close = chunk[chunk.length - 1]?.price ?? 0
-    const prices = chunk.map(p => p.price)
+    const prices = chunk.map((p) => p.price)
     const low = Math.min(...prices)
     const high = Math.max(...prices)
     const timestamp = chunk[chunk.length - 1]?.timestamp ?? Date.now()
-    
+
     candles.push({
       time: new Date(timestamp).toLocaleTimeString(),
-      values: [open, close, low, high]
+      values: [open, close, low, high],
     })
   }
-  
+
   return candles
 })
 
 const option = computed(() => {
-  const primaryCoin = store.coins.find(c => c.id === (store.selectedCoins[0] || 'bitcoin'))
-  
+  const chartTheme = theme.value
+  const primaryCoin = store.coins.find((c) => c.id === primaryCoinId.value)
+
   return {
     backgroundColor: 'transparent',
-    tooltip: {
-      trigger: 'axis',
-      backgroundColor: '#1a1d2e',
-      borderColor: '#2a2d3e',
-      textStyle: { color: '#fff' }
-    },
+    tooltip: createChartTooltip(),
     grid: {
       top: '10%',
       left: '3%',
       right: '4%',
       bottom: '10%',
-      containLabel: true
+      containLabel: true,
     },
     xAxis: {
       type: 'category',
-      data: candleData.value.map(c => c.time),
-      axisLine: { lineStyle: { color: '#2a2d3e' } },
-      axisLabel: { color: '#94a3b8' }
+      data: candleData.value.map((c) => c.time),
+      axisLine: { lineStyle: { color: chartTheme.axis.line } },
+      axisLabel: { color: chartTheme.axis.label },
     },
     yAxis: {
       type: 'value',
       scale: true,
       axisLine: { show: false },
-      splitLine: { lineStyle: { color: '#2a2d3e' } },
-      axisLabel: { color: '#94a3b8' }
+      splitLine: { lineStyle: { color: chartTheme.axis.line } },
+      axisLabel: { color: chartTheme.axis.label },
     },
     series: [
       {
         name: primaryCoin?.symbol || 'Price',
         type: 'candlestick',
-        data: candleData.value.map(c => c.values),
+        data: candleData.value.map((c) => c.values),
         itemStyle: {
-          color: '#00ff88',
-          color0: '#ff4d4d',
-          borderColor: '#00ff88',
-          borderColor0: '#ff4d4d'
-        }
-      }
-    ]
+          color: chartTheme.brand.positive,
+          color0: chartTheme.brand.negative,
+          borderColor: chartTheme.brand.positive,
+          borderColor0: chartTheme.brand.negative,
+        },
+      },
+    ],
   }
 })
 </script>
 
 <template>
   <div class="bg-surface-card p-6 rounded-xl border border-surface-border h-[400px]">
-    <h2 class="text-sm font-bold text-gray-400 mb-4 uppercase tracking-widest">
-      OHLC: {{ store.coins.find(c => c.id === (store.selectedCoins[0] || 'bitcoin'))?.name }}
+    <h2 class="text-sm font-semibold text-content-muted mb-4 uppercase tracking-widest">
+      OHLC: {{ primaryCoinName }}
     </h2>
     <div class="chart-container">
       <ChartSkeleton v-if="store.isChartsLoading" message="Building OHLC candles..." />
