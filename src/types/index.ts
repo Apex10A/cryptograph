@@ -3,6 +3,7 @@ export interface CoinData {
   symbol: string
   name: string
   price: number
+  openPrice24h: number
   change24h: number
   changePercent24h: number
   volume: number
