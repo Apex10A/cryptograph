@@ -18,45 +18,45 @@ const columnHelper = createColumnHelper<TradeEvent>()
 const columns = [
   columnHelper.accessor('timestamp', {
     header: 'Time',
-    cell: info => new Date(info.getValue()).toLocaleTimeString(),
+    cell: (info) => new Date(info.getValue()).toLocaleTimeString(),
   }),
   columnHelper.accessor('coin', {
     header: 'Coin',
-    cell: info => info.getValue(),
+    cell: (info) => info.getValue(),
   }),
   columnHelper.accessor('type', {
     header: 'Type',
-    cell: info => {
+    cell: (info) => {
       const type = info.getValue()
       const colors: Record<string, string> = {
         BUY: 'text-brand',
         SELL: 'text-danger',
         ALERT: 'text-warning',
-        LIQUIDATION: 'text-danger font-bold underline'
+        LIQUIDATION: 'text-danger font-bold underline',
       }
       return `<span class="${colors[type]}">${type}</span>`
     },
   }),
   columnHelper.accessor('price', {
     header: 'Price',
-    cell: info => `$${info.getValue().toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
+    cell: (info) => `$${info.getValue().toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
   }),
   columnHelper.accessor('amount', {
     header: 'Amount',
-    cell: info => info.getValue().toFixed(4),
+    cell: (info) => info.getValue().toFixed(4),
   }),
   columnHelper.accessor('value', {
     header: 'Value',
-    cell: info => `$${info.getValue().toLocaleString(undefined, { minimumFractionDigits: 0 })}`,
+    cell: (info) => `$${info.getValue().toLocaleString(undefined, { minimumFractionDigits: 0 })}`,
   }),
   columnHelper.accessor('severity', {
     header: 'Severity',
-    cell: info => {
+    cell: (info) => {
       const severity = info.getValue()
       const colors: Record<string, string> = {
         low: 'bg-gray-500',
         medium: 'bg-warning',
-        high: 'bg-danger animate-pulse'
+        high: 'bg-danger animate-pulse',
       }
       return `<span class="px-2 py-0.5 rounded-full text-[10px] uppercase font-bold text-black ${colors[severity]}">${severity}</span>`
     },
@@ -64,14 +64,55 @@ const columns = [
 ]
 
 const table = useVueTable({
-  get data() { return store.activityFeed },
+  get data() {
+    return store.activityFeed
+  },
   columns,
   state: {
-    get globalFilter() { return globalFilter.value },
+    get globalFilter() {
+      return globalFilter.value
+    },
   },
-  onGlobalFilterChange: (val) => { globalFilter.value = val },
+  onGlobalFilterChange: (val) => {
+    globalFilter.value = val
+  },
   getCoreRowModel: getCoreRowModel(),
   getFilteredRowModel: getFilteredRowModel(),
+})
+
+const emptyState = computed(() => {
+  if (globalFilter.value.trim()) {
+    return {
+      title: 'No matching trades',
+      description: `Nothing matched "${globalFilter.value}". Try another coin symbol or trade type.`,
+    }
+  }
+
+  if (store.streamStatus === 'paused') {
+    return {
+      title: 'Stream paused',
+      description: 'Resume the stream to listen for live Binance trades.',
+    }
+  }
+
+  if (store.streamStatus === 'reconnecting') {
+    return {
+      title: 'Reconnecting to Binance',
+      description: 'The live feed will populate again as soon as the socket reconnects.',
+    }
+  }
+
+  if (store.streamStatus === 'error') {
+    return {
+      title: 'Feed connection error',
+      description: 'Unable to receive live trades right now. Try pausing and resuming the stream.',
+    }
+  }
+
+  return {
+    title: 'Listening for live trades',
+    description: 'Large Binance trades ($25k+) will appear here in real time.',
+  }
 })
 
 const getRowClass = (type: string) => {
@@ -80,7 +121,7 @@ const getRowClass = (type: string) => {
     BUY: 'bg-brand bg-opacity-[0.02]',
     SELL: 'bg-danger bg-opacity-[0.02]',
     ALERT: 'bg-warning bg-opacity-[0.02]',
-    LIQUIDATION: 'bg-danger bg-opacity-[0.05]'
+    LIQUIDATION: 'bg-danger bg-opacity-[0.05]',
   }
   return base + (tints[type] || '')
 }
@@ -91,8 +132,16 @@ const getRowClass = (type: string) => {
     <div class="p-4 border-b border-surface-border flex justify-between items-center bg-surface-card">
       <h2 class="font-bold flex items-center gap-2">
         <span class="flex h-2 w-2 relative">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-brand"></span>
+          <span
+            v-if="store.streamStatus === 'live'"
+            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand opacity-75"
+          />
+          <span
+            :class="[
+              'relative inline-flex rounded-full h-2 w-2',
+              store.streamStatus === 'live' ? 'bg-brand' : 'bg-gray-500',
+            ]"
+          />
         </span>
         LIVE ACTIVITY FEED
       </h2>
@@ -128,12 +177,25 @@ const getRowClass = (type: string) => {
               <span v-if="typeof cell.column.columnDef.cell === 'string'">
                 {{ cell.getValue() }}
               </span>
-              <span v-else v-html="cell.renderValue()"></span>
+              <span v-else v-html="cell.renderValue()" />
             </td>
           </tr>
           <tr v-if="table.getRowModel().rows.length === 0">
-            <td colspan="7" class="px-4 py-8 text-center text-gray-500 italic">
-              Waiting for live trade data...
+            <td colspan="7" class="px-4 py-12 text-center">
+              <div class="flex flex-col items-center gap-3">
+                <div class="w-12 h-12 rounded-full border border-surface-border flex items-center justify-center">
+                  <span
+                    :class="[
+                      'w-2 h-2 rounded-full',
+                      store.streamStatus === 'live' ? 'bg-brand animate-pulse' : 'bg-gray-500',
+                    ]"
+                  />
+                </div>
+                <div>
+                  <p class="font-bold text-gray-300">{{ emptyState.title }}</p>
+                  <p class="text-sm text-gray-500 mt-1 max-w-md mx-auto">{{ emptyState.description }}</p>
+                </div>
+              </div>
             </td>
           </tr>
         </tbody>
