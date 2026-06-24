@@ -9,6 +9,7 @@ import {
   TitleComponent
 } from 'echarts/components'
 import VChart, { THEME_KEY } from 'vue-echarts'
+import ChartSkeleton from './ChartSkeleton.vue'
 import { useDashboardStore } from '../../stores/dashboardStore'
 
 use([
@@ -71,7 +72,8 @@ const option = computed(() => {
   <div class="bg-surface-card p-6 rounded-xl border border-surface-border h-[400px]">
     <h2 class="text-sm font-bold text-gray-400 mb-4 uppercase tracking-widest">Market Cap Trend</h2>
     <div class="chart-container">
-      <VChart :option="option" autoresize />
+      <ChartSkeleton v-if="store.isChartsLoading" message="Building market cap trend..." />
+      <VChart v-else :option="option" autoresize />
     </div>
   </div>
 </template>
