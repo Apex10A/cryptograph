@@ -8,9 +8,11 @@ import {
   createColumnHelper,
 } from '@tanstack/vue-table'
 import { useDashboardStore } from '../../stores/dashboardStore'
+import { useOracleMode } from '../../composables/useOracleMode'
 import type { TradeEvent } from '../../types'
 
 const store = useDashboardStore()
+const { oracleText } = useOracleMode()
 const globalFilter = ref('')
 
 const columnHelper = createColumnHelper<TradeEvent>()
@@ -90,8 +92,10 @@ const emptyState = computed(() => {
 
   if (store.streamStatus === 'paused') {
     return {
-      title: 'Stream paused',
-      description: 'Resume the stream to listen for live Binance trades.',
+      title: oracleText('Stream paused'),
+      description: oracleText(
+        'Resume the stream to listen for live Binance trades.',
+      ),
     }
   }
 
@@ -110,27 +114,29 @@ const emptyState = computed(() => {
   }
 
   return {
-    title: 'Listening for live trades',
-    description: 'Large Binance trades ($25k+) will appear here in real time.',
+    title: oracleText('Listening for live trades'),
+    description: oracleText(
+      'Large Binance trades ($25k+) will appear here in real time.',
+    ),
   }
 })
 
 const getRowClass = (type: string) => {
   const base = 'border-b border-surface-border transition-colors hover:bg-surface-hover '
   const tints: Record<string, string> = {
-    BUY: 'bg-brand bg-opacity-[0.02]',
-    SELL: 'bg-danger bg-opacity-[0.02]',
-    ALERT: 'bg-warning bg-opacity-[0.02]',
-    LIQUIDATION: 'bg-danger bg-opacity-[0.05]',
+    BUY: 'bg-brand/5',
+    SELL: 'bg-danger/5',
+    ALERT: 'bg-warning/5',
+    LIQUIDATION: 'bg-danger/10',
   }
   return base + (tints[type] || '')
 }
 </script>
 
 <template>
-  <div class="bg-surface-card rounded-xl border border-surface-border overflow-hidden">
-    <div class="p-4 border-b border-surface-border flex justify-between items-center bg-surface-card">
-      <h2 class="font-semibold flex items-center gap-2 text-content">
+  <div class="terminal-panel overflow-hidden">
+    <div class="p-4 border-b border-surface-border flex justify-between items-center gap-3">
+      <h2 class="font-semibold flex items-center gap-2 text-content text-sm">
         <span class="flex h-2 w-2 relative">
           <span
             v-if="store.streamStatus === 'live'"
@@ -143,7 +149,7 @@ const getRowClass = (type: string) => {
             ]"
           />
         </span>
-        LIVE ACTIVITY FEED
+        {{ oracleText('LIVE ACTIVITY FEED') }}
       </h2>
       <input
         v-model="globalFilter"
