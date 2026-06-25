@@ -18,37 +18,37 @@ export interface ChartTheme {
 
 const DARK_THEME: ChartTheme = {
   echartsTheme: 'dark',
-  colors: ['#26a69a', '#42a5f5', '#ffa726', '#ef5350', '#ab47bc', '#ec407a'],
+  colors: ['#e879f9', '#fbbf24', '#a78bfa', '#fb7185', '#67e8f9', '#f9a8d4'],
   axis: {
-    line: '#1e222d',
-    label: '#787b86',
+    line: '#2a2438',
+    label: '#948da8',
   },
   brand: {
-    positive: '#26a69a',
-    negative: '#ef5350',
+    positive: '#86efac',
+    negative: '#fda4af',
   },
   tooltip: {
-    backgroundColor: '#131722',
-    borderColor: '#1e222d',
-    textColor: '#d1d4dc',
+    backgroundColor: '#110f1a',
+    borderColor: '#2a2438',
+    textColor: '#ede9f5',
   },
 }
 
 const LIGHT_THEME: ChartTheme = {
   echartsTheme: undefined,
-  colors: ['#0d9488', '#2563eb', '#d97706', '#dc2626', '#7c3aed', '#db2777'],
+  colors: ['#6d28d9', '#be185d', '#7c3aed', '#b91c1c', '#0e7490', '#a21caf'],
   axis: {
-    line: '#e2e8f0',
-    label: '#64748b',
+    line: '#e4d9c8',
+    label: '#6b5f75',
   },
   brand: {
-    positive: '#16a34a',
-    negative: '#dc2626',
+    positive: '#15803d',
+    negative: '#be123c',
   },
   tooltip: {
-    backgroundColor: '#ffffff',
-    borderColor: '#e2e8f0',
-    textColor: '#0f172a',
+    backgroundColor: '#fffdf7',
+    borderColor: '#e4d9c8',
+    textColor: '#1a1423',
   },
 }
 
