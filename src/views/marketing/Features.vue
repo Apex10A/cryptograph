@@ -48,23 +48,25 @@ const features = [
   },
   {
     icon: SunIcon,
-    title: 'Dark & light themes',
-    description: 'Toggle between a TradingView-inspired dark terminal and a clean light mode.',
-    tag: 'Theming',
+    title: 'Aurora themes',
+    description: 'Warm cream daylight or void-purple night — Bricolage Grotesque UI with amber signal accents.',
+    tag: 'Aurora Ink',
   },
 ]
 </script>
 
 <template>
   <MarketingLayout>
-    <section class="max-w-6xl mx-auto px-6 pt-16 pb-12">
-      <p class="text-sm font-semibold uppercase tracking-widest text-brand mb-3">Features</p>
-      <h1 class="text-3xl sm:text-4xl font-bold text-content max-w-2xl">
-        A focused terminal built for live crypto monitoring
+    <section class="relative max-w-6xl mx-auto px-6 pt-16 pb-12">
+      <div class="marketing-aurora-a pointer-events-none opacity-60" />
+      <p class="text-sm font-semibold uppercase tracking-[0.2em] text-brand mb-3">Machinery</p>
+      <h1 class="font-display text-3xl sm:text-4xl font-extrabold text-content max-w-2xl">
+        What hums beneath the
+        <span class="text-gradient-brand"> violet glass</span>
       </h1>
       <p class="mt-4 text-content-muted max-w-2xl leading-relaxed">
-        CryptoFlow is a demo trading dashboard that wires real APIs into a polished Vue 3
-        interface. Every feature below is live in the terminal.
+        Every panel below is wired to real APIs — not mock data, not vaporware. This is a
+        laboratory terminal for people who want to see how live crypto feels.
       </p>
     </section>
 
@@ -73,7 +75,7 @@ const features = [
         <div
           v-for="feature in features"
           :key="feature.title"
-          class="p-6 rounded-xl border border-surface-border bg-surface-card hover:border-brand/30 transition-colors"
+          class="p-6 rounded-2xl border border-surface-border marketing-card-glass hover:border-brand/40 transition-colors"
         >
           <div class="flex items-start justify-between gap-4 mb-4">
             <component :is="feature.icon" class="w-7 h-7 text-brand shrink-0" />
@@ -86,14 +88,14 @@ const features = [
         </div>
       </div>
 
-      <div class="mt-12 p-8 rounded-2xl border border-brand/20 bg-brand/5 text-center">
-        <h2 class="text-xl font-bold text-content">See it all in action</h2>
-        <p class="mt-2 text-content-muted text-sm">Open the terminal and watch live data flow.</p>
+      <div class="mt-12 p-8 rounded-2xl border border-brand/25 marketing-card-glass text-center glow-ring">
+        <h2 class="font-display text-xl font-bold text-content">Witness the stream</h2>
+        <p class="mt-2 text-content-muted text-sm">Trades flicker in. Charts breathe. No signup ritual.</p>
         <RouterLink
           to="/terminal"
-          class="inline-flex items-center gap-2 mt-6 px-6 py-3 rounded-xl bg-brand text-white font-semibold hover:opacity-90 transition-opacity"
+          class="inline-flex items-center gap-2 mt-6 px-7 py-3.5 rounded-full bg-brand text-white font-semibold hover:opacity-90 transition-opacity glow-ring"
         >
-          Launch Terminal
+          Enter the Terminal
           <ArrowRightIcon class="w-4 h-4" />
         </RouterLink>
       </div>
