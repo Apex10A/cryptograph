@@ -35,9 +35,9 @@ const navLinks = [
         <ThemeToggle />
         <RouterLink
           to="/terminal"
-          class="px-4 py-2 rounded-lg bg-brand text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+          class="px-4 py-2 rounded-full bg-brand text-white text-sm font-semibold hover:opacity-90 transition-opacity glow-ring"
         >
-          Launch Terminal
+          Enter Terminal
         </RouterLink>
       </div>
     </div>

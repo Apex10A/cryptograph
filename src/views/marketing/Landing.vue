@@ -38,37 +38,39 @@ const stats = [
 <template>
   <MarketingLayout>
     <section class="relative overflow-hidden marketing-hero-glow">
+      <div class="marketing-aurora-a pointer-events-none" />
+      <div class="marketing-aurora-b pointer-events-none" />
       <div class="absolute inset-0 marketing-grid-bg pointer-events-none" />
 
       <div class="relative max-w-6xl mx-auto px-6 pt-20 pb-16 text-center">
-        <p class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-surface-border bg-surface-card/80 text-xs font-semibold uppercase tracking-widest text-content-muted mb-6">
+        <p class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand/30 bg-surface-card/70 marketing-card-glass text-xs font-semibold uppercase tracking-[0.2em] text-content-muted mb-6">
           <span class="w-1.5 h-1.5 rounded-full bg-brand animate-pulse-brand" />
-          Live crypto terminal demo
+          Signal in the noise
         </p>
 
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-content max-w-3xl mx-auto leading-tight">
-          Real-time crypto intelligence.
-          <span class="text-brand"> One terminal.</span>
+        <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold text-content max-w-3xl mx-auto leading-[1.05]">
+          Read the market
+          <span class="text-gradient-brand"> before it moves.</span>
         </h1>
 
         <p class="mt-6 text-lg text-content-muted max-w-2xl mx-auto leading-relaxed">
-          CryptoFlow combines CoinGecko market data with Binance live streams in a
-          professional trading dashboard — built for speed, clarity, and exploration.
+          CryptoFlow is an experimental terminal — part oracle, part dashboard — streaming
+          live Binance trades and CoinGecko snapshots into one uncanny violet void.
         </p>
 
         <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
           <RouterLink
             to="/terminal"
-            class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-brand text-white font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-brand/20"
+            class="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-brand text-white font-semibold hover:opacity-90 transition-all glow-ring"
           >
-            Launch Terminal
+            Enter the Terminal
             <ArrowRightIcon class="w-4 h-4" />
           </RouterLink>
           <RouterLink
             to="/features"
-            class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-surface-border bg-surface-card text-content font-semibold hover:bg-surface-hover transition-colors"
+            class="inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-surface-border marketing-card-glass text-content font-semibold hover:border-brand/40 transition-colors"
           >
-            Explore Features
+            See the machinery
           </RouterLink>
         </div>
       </div>
@@ -91,15 +93,15 @@ const stats = [
 
     <section class="max-w-6xl mx-auto px-6 py-16">
       <div class="text-center mb-12">
-        <h2 class="text-2xl font-bold text-content">Everything you need to watch the market</h2>
-        <p class="mt-2 text-content-muted">A focused terminal experience without the noise.</p>
+        <h2 class="font-display text-2xl font-bold text-content">Built for watchers, not tourists</h2>
+        <p class="mt-2 text-content-muted">Strange tools for people who stare at charts too long.</p>
       </div>
 
       <div class="grid md:grid-cols-3 gap-6">
         <div
           v-for="item in highlights"
           :key="item.title"
-          class="p-6 rounded-xl border border-surface-border bg-surface-card hover:border-brand/30 transition-colors"
+          class="p-6 rounded-2xl border border-surface-border marketing-card-glass hover:border-brand/40 transition-colors"
         >
           <component :is="item.icon" class="w-8 h-8 text-brand mb-4" />
           <h3 class="font-semibold text-content mb-2">{{ item.title }}</h3>
@@ -109,7 +111,7 @@ const stats = [
     </section>
 
     <section class="max-w-6xl mx-auto px-6 pb-20">
-      <div class="rounded-2xl border border-surface-border bg-surface-card overflow-hidden">
+      <div class="rounded-2xl border border-surface-border marketing-card-glass overflow-hidden glow-ring">
         <div class="p-4 border-b border-surface-border flex items-center gap-2">
           <span class="w-3 h-3 rounded-full bg-danger/80" />
           <span class="w-3 h-3 rounded-full bg-warning/80" />
@@ -141,13 +143,13 @@ const stats = [
 
     <section class="border-t border-surface-border bg-surface-card">
       <div class="max-w-6xl mx-auto px-6 py-16 text-center">
-        <h2 class="text-2xl font-bold text-content">Ready to explore the markets?</h2>
-        <p class="mt-2 text-content-muted">Jump into the live terminal — no account needed.</p>
+        <h2 class="font-display text-2xl font-bold text-content">The void is live. Step in.</h2>
+        <p class="mt-2 text-content-muted">No accounts. No friction. Just signal.</p>
         <RouterLink
           to="/terminal"
-          class="inline-flex mt-6 px-6 py-3 rounded-xl bg-brand text-white font-semibold hover:opacity-90 transition-opacity"
+          class="inline-flex mt-6 px-7 py-3.5 rounded-full bg-brand text-white font-semibold hover:opacity-90 transition-opacity glow-ring"
         >
-          Launch Terminal
+          Enter the Terminal
         </RouterLink>
       </div>
     </section>

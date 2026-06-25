@@ -1,21 +1,43 @@
 .marketing-grid-bg {
   background-image:
-    linear-gradient(to right, color-mix(in srgb, var(--cf-surface-border) 60%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--cf-surface-border) 60%, transparent) 1px, transparent 1px);
-  background-size: 40px 40px;
-  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 20%, transparent 70%);
+    linear-gradient(to right, color-mix(in srgb, var(--cf-surface-border) 50%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--cf-surface-border) 50%, transparent) 1px, transparent 1px);
+  background-size: 36px 36px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, #000 15%, transparent 72%);
 }
 
 .marketing-hero-glow {
-  background: radial-gradient(
-    ellipse 80% 50% at 50% -20%,
-    color-mix(in srgb, var(--cf-brand) 22%, transparent),
-    transparent 70%
-  );
+  background:
+    radial-gradient(ellipse 55% 45% at 15% 0%, color-mix(in srgb, var(--cf-brand) 28%, transparent), transparent 65%),
+    radial-gradient(ellipse 50% 40% at 85% 10%, color-mix(in srgb, var(--cf-accent) 22%, transparent), transparent 60%);
+}
+
+.marketing-aurora-a {
+  position: absolute;
+  width: 28rem;
+  height: 28rem;
+  top: -8rem;
+  left: -6rem;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--cf-brand) 30%, transparent);
+  filter: blur(80px);
+  animation: aurora-drift 14s ease-in-out infinite alternate;
+}
+
+.marketing-aurora-b {
+  position: absolute;
+  width: 24rem;
+  height: 24rem;
+  top: -4rem;
+  right: -4rem;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--cf-accent) 25%, transparent);
+  filter: blur(72px);
+  animation: aurora-drift 18s ease-in-out infinite alternate-reverse;
 }
 
 .marketing-ticker-track {
-  animation: ticker-scroll 40s linear infinite;
+  animation: ticker-scroll 45s linear infinite;
 }
 
 @keyframes ticker-scroll {
@@ -25,4 +47,18 @@
   100% {
     transform: translateX(-50%);
   }
+}
+
+@keyframes aurora-drift {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    transform: translate(24px, 16px) scale(1.08);
+  }
+}
+
+.marketing-card-glass {
+  background: color-mix(in srgb, var(--cf-surface-card) 88%, transparent);
+  backdrop-filter: blur(12px);
 }
