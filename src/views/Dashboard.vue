@@ -9,6 +9,8 @@ import CandlestickChart from '../components/charts/CandlestickChart.vue'
 import ActivityFeed from '../components/feed/ActivityFeed.vue'
 import DashboardControls from '../components/controls/DashboardControls.vue'
 import ThemeToggle from '../components/controls/ThemeToggle.vue'
+import AppLogo from '../components/marketing/AppLogo.vue'
+import { RouterLink } from 'vue-router'
 
 const store = useDashboardStore()
 
@@ -39,9 +41,14 @@ onUnmounted(() => {
   <div class="min-h-screen flex flex-col transition-colors duration-300">
     <header class="h-16 flex items-center justify-between px-6 bg-surface-card border-b border-surface-border sticky top-0 z-50">
       <div class="flex items-center gap-3">
-        <h1 class="text-xl font-black tracking-tighter text-content">
-          CRYPTO<span class="text-brand">FLOW</span>
-        </h1>
+        <AppLogo to="/" size="md" />
+
+        <RouterLink
+          to="/features"
+          class="hidden sm:inline text-xs font-semibold text-content-muted hover:text-brand transition-colors"
+        >
+          Features
+        </RouterLink>
 
         <div class="flex items-center gap-2 ml-1 px-2.5 py-1 rounded-full bg-surface border border-surface-border">
           <span :class="['w-2 h-2 rounded-full', statusDotClass]" />
