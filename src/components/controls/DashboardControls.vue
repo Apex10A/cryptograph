@@ -29,7 +29,7 @@ const toggleStream = () => {
           'px-4 py-2 rounded-md font-semibold text-sm transition-all',
           isStreamActive()
             ? 'bg-danger text-white hover:opacity-90'
-            : 'bg-brand text-white hover:opacity-90',
+            : 'bg-brand text-white hover:opacity-90 glow-ring',
         ]"
       >
         {{ isStreamActive() ? 'PAUSE STREAM' : 'RESUME STREAM' }}
@@ -50,7 +50,7 @@ const toggleStream = () => {
         :class="[
           'px-3 py-1 rounded-md text-sm font-medium transition-all',
           store.timeRange === range
-            ? 'bg-brand text-white'
+            ? 'bg-brand text-white glow-ring'
             : 'text-content-muted hover:text-content',
         ]"
       >
