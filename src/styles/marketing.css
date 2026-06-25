@@ -1,0 +1,28 @@
+.marketing-grid-bg {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--cf-surface-border) 60%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--cf-surface-border) 60%, transparent) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 20%, transparent 70%);
+}
+
+.marketing-hero-glow {
+  background: radial-gradient(
+    ellipse 80% 50% at 50% -20%,
+    color-mix(in srgb, var(--cf-brand) 22%, transparent),
+    transparent 70%
+  );
+}
+
+.marketing-ticker-track {
+  animation: ticker-scroll 40s linear infinite;
+}
+
+@keyframes ticker-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
