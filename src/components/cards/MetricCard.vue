@@ -47,13 +47,13 @@ const sparklinePoints = computed(() => {
     :class="[
       'relative overflow-hidden cursor-pointer p-4 rounded-xl transition-all duration-300 border',
       isSelected
-        ? 'border-brand/50 bg-brand/5 ring-1 ring-brand/20 shadow-sm'
-        : 'border-surface-border bg-surface-card hover:bg-surface-hover hover:border-surface-border',
+        ? 'border-brand/40 bg-brand/8 ring-1 ring-brand/25'
+        : 'border-surface-border bg-surface-card/80 marketing-card-glass hover:border-brand/25 hover:bg-surface-hover',
     ]"
   >
     <div class="flex justify-between items-start mb-2">
       <div>
-        <h3 class="text-content-muted text-xs font-semibold uppercase tracking-wider">{{ coin.symbol }}</h3>
+        <h3 class="text-content-muted text-xs font-semibold uppercase tracking-[0.15em]">{{ coin.symbol }}</h3>
         <p
           :class="[
             'text-xl font-mono font-bold animate-number-tick text-content',
