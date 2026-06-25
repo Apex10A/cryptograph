@@ -1,0 +1,114 @@
+.terminal-sidebar {
+  width: 15rem;
+  background: color-mix(in srgb, var(--cf-surface-card) 92%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+.terminal-panel {
+  border-radius: 1rem;
+  border: 1px solid var(--cf-surface-border);
+  background: color-mix(in srgb, var(--cf-surface-card) 88%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.dashboard-main {
+  flex: 1;
+  overflow: auto;
+  padding: 1rem 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dashboard-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .dashboard-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .dashboard-metrics {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+.dashboard-bento {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-bento {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-areas:
+      "primary primary primary primary primary primary primary primary side side side side"
+      "bar bar bar bar bar bar candle candle candle candle candle candle"
+      "feed feed feed feed feed feed feed feed feed feed feed feed";
+  }
+
+  .dashboard-primary-chart {
+    grid-area: primary;
+  }
+
+.dashboard-side-stack {
+    grid-area: side;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-height: 0;
+  }
+
+  .dashboard-side-stack .terminal-panel {
+    min-height: 0;
+  }
+
+  .dashboard-side-stack .chart-container {
+    min-height: 200px;
+  }
+
+  .dashboard-primary-chart .chart-container {
+    min-height: 360px;
+  }
+
+  .dashboard-bar-chart {
+    grid-area: bar;
+  }
+
+  .dashboard-candle-chart {
+    grid-area: candle;
+  }
+
+  .dashboard-feed {
+    grid-area: feed;
+  }
+}
+
+.onboarding-spotlight {
+  box-shadow:
+    0 0 0 9999px color-mix(in srgb, #08070d 72%, transparent),
+    0 0 0 2px var(--cf-brand),
+    0 0 32px color-mix(in srgb, var(--cf-brand) 40%, transparent);
+  border-radius: 0.75rem;
+  transition: all 0.35s ease;
+}
+
+.oracle-whisper {
+  animation: oracle-fade 8s ease-in-out infinite;
+}
+
+@keyframes oracle-fade {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
