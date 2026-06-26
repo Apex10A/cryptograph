@@ -6,6 +6,11 @@ import type { TimeRange } from '../../types'
 import ThemeToggle from '../controls/ThemeToggle.vue'
 import AppLogo from '../marketing/AppLogo.vue'
 import { RouterLink } from 'vue-router'
+import { Bars3Icon } from '@heroicons/vue/24/outline'
+
+defineProps<{
+  onOpenNav?: () => void
+}>()
 
 const store = useDashboardStore()
 const { oracleText } = useOracleMode()
@@ -31,6 +36,15 @@ const toggleStream = () => {
   >
     <div class="flex flex-wrap items-center justify-between gap-3 px-4 py-3 lg:px-5">
       <div class="flex items-center gap-3 min-w-0">
+        <button
+          type="button"
+          class="lg:hidden p-2 rounded-lg border border-surface-border text-content-muted hover:text-brand hover:border-brand/30 transition-colors shrink-0"
+          aria-label="Open navigation"
+          @click="onOpenNav?.()"
+        >
+          <Bars3Icon class="w-5 h-5" />
+        </button>
+
         <AppLogo to="/" size="sm" class="lg:hidden shrink-0" />
 
         <div class="min-w-0">
