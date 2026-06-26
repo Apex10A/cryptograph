@@ -29,6 +29,10 @@ export const BINANCE_SYMBOL_TO_COIN_ID = Object.fromEntries(
   COIN_SEEDS.map((coin) => [coin.binanceSymbol, coin.id]),
 )
 
+export const COIN_SYMBOL_TO_ID = Object.fromEntries(
+  COIN_SEEDS.map((coin) => [coin.symbol, coin.id]),
+)
+
 export function createEmptyChartData(): Record<string, PricePoint[]> {
   return Object.fromEntries(COIN_SEEDS.map((coin) => [coin.id, []]))
 }

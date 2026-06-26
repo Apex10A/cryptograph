@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, toRef } from 'vue'
 import { useDashboardStore } from '../../stores/dashboardStore'
+import { usePriceTickFlash } from '../../composables/usePriceTickFlash'
+import CoinIcon from '../coins/CoinIcon.vue'
 import type { CoinData } from '../../types'
 
 const props = defineProps<{
@@ -11,6 +13,11 @@ const store = useDashboardStore()
 
 const isSelected = computed(() => store.selectedCoins.includes(props.coin.id))
 const isPositive = computed(() => props.coin.change24h >= 0)
+const streamLive = computed(
+  () => store.streamStatus === 'live' || store.streamStatus === 'reconnecting',
+)
+
+const { tickDirection } = usePriceTickFlash(toRef(props.coin, 'price'), streamLive)
 
 const formatNumber = (num: number, digits: number = 2) => {
   return new Intl.NumberFormat('en-US', {
@@ -49,21 +56,30 @@ const sparklinePoints = computed(() => {
       isSelected
         ? 'border-brand/40 bg-brand/8 ring-1 ring-brand/25'
         : 'border-surface-border bg-surface-card/80 marketing-card-glass hover:border-brand/25 hover:bg-surface-hover',
+      tickDirection === 'up' ? 'price-tick-up' : '',
+      tickDirection === 'down' ? 'price-tick-down' : '',
     ]"
   >
-    <div class="flex justify-between items-start mb-2">
-      <div>
-        <h3 class="text-content-muted text-xs font-semibold uppercase tracking-[0.15em]">{{ coin.symbol }}</h3>
-        <p
-          :class="[
-            'text-xl font-mono font-bold animate-number-tick text-content',
-            store.isLoadingPrices ? 'text-content-muted animate-pulse' : '',
-          ]"
-        >
-          ${{ formatNumber(coin.price, coin.price < 1 ? 4 : 2) }}
-        </p>
+    <div class="flex justify-between items-start mb-2 gap-2">
+      <div class="flex items-start gap-2.5 min-w-0">
+        <CoinIcon :coin-id="coin.id" :symbol="coin.symbol" size="sm" />
+        <div class="min-w-0">
+          <h3 class="text-content-muted text-xs font-semibold uppercase tracking-[0.15em]">
+            {{ coin.symbol }}
+          </h3>
+          <p
+            :class="[
+              'text-xl font-mono font-bold text-content',
+              store.isLoadingPrices ? 'text-content-muted animate-pulse' : '',
+              tickDirection === 'up' ? 'text-up' : '',
+              tickDirection === 'down' ? 'text-down' : '',
+            ]"
+          >
+            ${{ formatNumber(coin.price, coin.price < 1 ? 4 : 2) }}
+          </p>
+        </div>
       </div>
-      <div :class="['text-sm font-mono font-semibold', isPositive ? 'text-up' : 'text-down']">
+      <div :class="['text-sm font-mono font-semibold shrink-0', isPositive ? 'text-up' : 'text-down']">
         {{ isPositive ? '+' : '' }}{{ formatNumber(coin.changePercent24h) }}%
       </div>
     </div>
