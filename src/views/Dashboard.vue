@@ -15,10 +15,13 @@ import DashboardTopBar from '../components/terminal/DashboardTopBar.vue'
 import OracleWhisper from '../components/terminal/OracleWhisper.vue'
 import OnboardingTour from '../components/onboarding/OnboardingTour.vue'
 import DashboardMarketSummary from '../components/terminal/DashboardMarketSummary.vue'
+import KeyboardShortcutsOverlay from '../components/terminal/KeyboardShortcutsOverlay.vue'
+import { useTerminalShortcuts } from '../composables/useTerminalShortcuts'
 
 const store = useDashboardStore()
 const onboarding = useOnboardingStore()
 const mobileNavOpen = ref(false)
+const { shortcutsOpen } = useTerminalShortcuts()
 
 useTradeSoundWatcher()
 
@@ -39,7 +42,10 @@ onUnmounted(() => {
     <DashboardMobileDrawer :open="mobileNavOpen" @close="mobileNavOpen = false" />
 
     <div class="flex-1 flex flex-col min-w-0 min-h-screen">
-      <DashboardTopBar @open-nav="mobileNavOpen = true" />
+      <DashboardTopBar
+        @open-nav="mobileNavOpen = true"
+        @open-shortcuts="shortcutsOpen = true"
+      />
 
       <main class="dashboard-main">
         <section data-tour="metrics" class="dashboard-metrics">
@@ -73,5 +79,6 @@ onUnmounted(() => {
 
     <OracleWhisper />
     <OnboardingTour />
+    <KeyboardShortcutsOverlay :open="shortcutsOpen" @close="shortcutsOpen = false" />
   </div>
 </template>

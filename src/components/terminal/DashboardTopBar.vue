@@ -10,6 +10,7 @@ import { Bars3Icon } from '@heroicons/vue/24/outline'
 
 defineProps<{
   onOpenNav?: () => void
+  onOpenShortcuts?: () => void
 }>()
 
 const store = useDashboardStore()
@@ -79,6 +80,14 @@ const toggleStream = () => {
       </div>
 
       <div class="flex items-center gap-2 lg:hidden">
+        <button
+          type="button"
+          class="p-2 rounded-lg border border-surface-border text-content-muted hover:text-brand hover:border-brand/30 transition-colors text-xs font-mono font-bold"
+          title="Keyboard shortcuts"
+          @click="onOpenShortcuts?.()"
+        >
+          ?
+        </button>
         <RouterLink
           to="/features"
           class="text-xs font-semibold text-content-muted hover:text-brand transition-colors"
@@ -110,6 +119,14 @@ const toggleStream = () => {
           class="px-3 py-1.5 rounded-lg bg-surface-hover border border-surface-border text-content hover:bg-surface transition-all text-xs font-semibold"
         >
           {{ oracleText('RESET VIEW') }}
+        </button>
+        <button
+          type="button"
+          class="px-2.5 py-1.5 rounded-lg border border-surface-border text-content-muted hover:text-brand hover:border-brand/30 transition-colors text-xs font-mono font-bold"
+          title="Keyboard shortcuts (?)"
+          @click="onOpenShortcuts?.()"
+        >
+          ?
         </button>
       </div>
 
