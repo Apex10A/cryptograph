@@ -44,6 +44,30 @@
       opacity: 1;
     }
   }
+
+  @keyframes priceTickUp {
+    0% {
+      box-shadow: inset 0 0 0 0 color-mix(in srgb, var(--cf-up) 0%, transparent);
+    }
+    40% {
+      box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--cf-up) 45%, transparent);
+    }
+    100% {
+      box-shadow: inset 0 0 0 0 color-mix(in srgb, var(--cf-up) 0%, transparent);
+    }
+  }
+
+  @keyframes priceTickDown {
+    0% {
+      box-shadow: inset 0 0 0 0 color-mix(in srgb, var(--cf-down) 0%, transparent);
+    }
+    40% {
+      box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--cf-down) 45%, transparent);
+    }
+    100% {
+      box-shadow: inset 0 0 0 0 color-mix(in srgb, var(--cf-down) 0%, transparent);
+    }
+  }
 }
 
 :root {
@@ -105,6 +129,14 @@
     box-shadow:
       0 0 0 1px color-mix(in srgb, var(--cf-brand) 35%, transparent),
       0 0 40px color-mix(in srgb, var(--cf-brand) 18%, transparent);
+  }
+
+  .price-tick-up {
+    animation: priceTickUp 0.45s ease-out;
+  }
+
+  .price-tick-down {
+    animation: priceTickDown 0.45s ease-out;
   }
 
   .app-grain::before {
